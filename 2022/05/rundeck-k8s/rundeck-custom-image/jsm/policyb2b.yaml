@@ -1,0 +1,46 @@
+by:
+  group: marketplaceb2bdevs
+context:
+  # https://docs.rundeck.com/docs/administration/security/authorization.html#project-scope-resources-and-actions
+  project: ".*"
+for:
+  job:
+    - allow: [ run,view,read,kill,view_history ]
+      equals:
+        group: "sonarcloud"
+    - allow: [ run,view,read,kill,view_history ]
+      equals:
+        group: "github"
+  node:
+    - allow: [ run,read ]
+  resource:
+    - equals:
+        # It enables the "ACTIVITY" panel.
+        kind: "event"
+      allow: [ read,create ]
+description: Allow "marketplaceb2bdevs" group to execute jobs related to GitHub and SonarCloud
+
+---
+
+description: Allow "marketplaceb2bdevs" group to read all projects and consult system information
+context:
+  # https://docs.rundeck.com/docs/administration/security/authorization.html#application-scope-resources-and-actions
+  application: 'rundeck'
+for:
+  resource:
+    - equals:
+        kind: system
+      allow: [ read ]
+  project:
+    - match:
+        name: '.*'
+      allow: [ read ]
+  storage:
+    - allow: [ read ]
+      match:
+        path: "keys/k8s.cluster"
+    - allow: [ read ]
+      match:
+        path: "keys/k8s.token"
+by:
+  group: marketplaceb2bdevs
